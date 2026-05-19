@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마인크래프트 엔티티 도감</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css');
+        @font-face {
+            font-family: 'NeoDunggeunmo';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/NeoDunggeunmo.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            background-color: #1a1008;
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            color: #f0d890;
+            padding: 20px;
+        }
+        header {
+            background-color: #2a1f0e;
+            border: 3px solid #5a4020;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 40px;
+            color: #f5c542;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 23px;
+            color: #aaffaa;
+            font-weight: normal;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 13px;
+            padding: 10px 14px;
+            border: 3px solid;
+            background-color: #2a1f0e;
+            cursor: pointer;
+        }
+
+        .filter-btn[data-filter="all"] { border-color: #f5c542; color: #f5c542; }
+        .filter-btn[data-filter="hostile"] { border-color: #e74c3c; color: #e74c3c; }
+        .filter-btn[data-filter="neutral"] { border-color: #f39c12; color: #f39c12; }
+        .filter-btn[data-filter="friendly"] { border-color: #2ecc71; color: #2ecc71; }
+        .filter-btn[data-filter="boss"] { border-color: #9b59b6; color: #9b59b6; }
+
+        .filter-btn[data-filter="all"].active { background-color: #f5c542; color: #fff; }
+        .filter-btn[data-filter="hostile"].active { background-color: #e74c3c; color: #fff; }
+        .filter-btn[data-filter="neutral"].active { background-color: #f39c12; color: #fff; }
+        .filter-btn[data-filter="friendly"].active { background-color: #2ecc71; color: #fff; }
+        .filter-btn[data-filter="boss"].active { background-color: #9b59b6; color: #fff; }
+
+        .filter-btn[data-filter="all"]:hover { background-color: #f5c542; color: #fff; }
+        .filter-btn[data-filter="hostile"]:hover { background-color: #e74c3c; color: #fff; }
+        .filter-btn[data-filter="neutral"]:hover { background-color: #f39c12; color: #fff; }
+        .filter-btn[data-filter="friendly"]:hover { background-color: #2ecc71; color: #fff; }
+        .filter-btn[data-filter="boss"]:hover { background-color: #9b59b6; color: #fff; }
+
+        .encyclopedia-panel {
+            background-color: #2a1f0e;
+            border: 3px solid #5a4020;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel-header {
+            font-size: 20px;
+            color: #a08050;
+            border-bottom: 2px solid #5a4020;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .entity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .entity-card {
+            background-color: #1c1409;
+            border: 3px solid #5a4020;
+            padding: 12px;
+        }
+
+        .card-sprite {
+            font-size: 48px;
+            text-align: center;
+            background-color: #0d0d0d;
+            padding: 10px;
+            border: 2px solid #5a4020;
+            margin-bottom: 10px;
+        }
+
+        .card-name-kr {
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 12px;
+            color: #f0d890;
+            margin-bottom: 4px;
+        }
+
+        .card-name-en {
+            font-size: 12px;
+            color: #a08050;
+            margin-bottom: 10px;
+        }
+
+        .card-hp {
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 9px;
+            color: #ff6666;
+            margin-bottom: 8px;
+        }
+
+        .card-type-badge {
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 10px;
+            padding: 3px 6px;
+            border: 2px solid;
+            display: inline-block;
+        }
+
+        .badge-hostile { border-color: #e74c3c; color: #e74c3c; }
+        .badge-neutral { border-color: #f39c12; color: #f39c12; }
+        .badge-friendly { border-color: #2ecc71; color: #2ecc71; }
+        .badge-boss { border-color: #9b59b6; color: #9b59b6; }
+
+        .game-panel {
+            background-color: #2a1f0e;
+            border: 3px solid #5a4020;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .game-ui {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 14px;
+        }
+
+        .game-btn {
+            font-family: 'Galmuri9', 'NeoDunggeunmo', sans-serif;
+            font-size: 15px;
+            padding: 10px 20px;
+            border: 3px solid #2eaccc;
+            color: #2eaccc;
+            background-color: #1a1008;
+            cursor: pointer;
+        }
+
+        .game-btn:hover {
+            background-color: #2eaccc;
+            color: #fff;
+        }
+
+        #gameCanvas {
+            background-color: #141414;
+            border: 4px solid #5a4020;
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        .score-display {
+            color: #f5c542;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⛏ 마인크래프트 엔티티 도감 ⛏</h1>
+        <h2>Minecraft Entity Encyclopedia</h2>
+    </header>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all" onclick="filterClick(this)">전체 All</button>
+        <button class="filter-btn" data-filter="hostile" onclick="filterClick(this)">적대적 Hostile</button>
+        <button class="filter-btn" data-filter="neutral" onclick="filterClick(this)">중립적 Neutral</button>
+        <button class="filter-btn" data-filter="friendly" onclick="filterClick(this)">친화적 Friendly</button>
+        <button class="filter-btn" data-filter="boss" onclick="filterClick(this)">보스 Boss</button>
+    </div>
+
+    <div class="encyclopedia-panel">
+        <div class="panel-header">
+            <span>엔티티 목록</span>
+        </div>
+        <div class="entity-grid" id="entity-grid"></div>
+    </div>
+
+    <div class="game-panel">
+        <div class="panel-header">
+            <span>미니게임: 좀비 피하기</span>
+        </div>
+        <div class="game-ui">
+            <button class="game-btn" id="start-btn" onclick="startGame()">게임 시작</button>
+            <div class="score-display">살아남은 시간: <span id="time-val">0.00</span>초</div>
+        </div>
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+    </div>
+
+    <script>
+        const ENTITIES = [
+            { krName: '좀비', enName: 'Zombie', type: 'hostile', hp: 20, img: 'https://static.wikia.nocookie.net/minecraft_ko_gamepedia/images/c/c3/Zombie.png/revision/latest/scale-to-width-down/162?cb=20120606033131' },
+            { krName: '스켈레톤', enName: 'Skeleton', type: 'hostile', hp: 20, img: 'https://i.namu.wiki/i/EkzV29xpt4eMJNo-AP-De-OqH0CpRTkvbT_rulYdDSYgzFtftMC5tNV_7zhcmORq17Ka3N185jeaDD8owle0Ww.webp' },
+            { krName: '크리퍼', enName: 'Creeper', type: 'hostile', hp: 20, img: 'https://i.namu.wiki/i/jL-mAAgG6kKzunsFckWenfN-BlwI0Hh1fpzoT9ZglsB3_Q8LMFqZYEPPQr2rLiWiyRsXd-itnnGrOuBZz06g9A.webp' },
+            { krName: '좀벌레', enName: 'Silverfish', type: 'hostile', hp: 8,  img: 'https://minecraft.wiki/images/Silverfish_JE1_BE1.gif?d40a7' },
+            { krName: '엔더맨', enName: 'Enderman', type: 'neutral', hp: 40, img: 'https://i.namu.wiki/i/zPXGNrL1O0WxHfsSfIuPYBK9Ez5oUYAeEd48bKYvRTs_tRnkc-0_1x01NVUdrhXGXX6Cr8BXx1airAyNEtlRaw.webp' },
+            { krName: '거미', enName: 'Spider', type: 'neutral', hp: 16, img: 'https://minecraft.wiki/images/thumb/Spider_JE5_BE4.png/1200px-Spider_JE5_BE4.png?b090e' },
+            { krName: '피글린', enName: 'Piglin', type: 'neutral', hp: 16, img: 'https://static.wikia.nocookie.net/minecraft_ko_gamepedia/images/6/6c/Piglin.png/revision/latest?cb=20200225144055' },
+            { krName: '철 골렘', enName: 'Iron Golem', type: 'neutral', hp: 100, img: 'https://static.wikia.nocookie.net/minecraft_ko_gamepedia/images/0/0d/Iron_Golem.png/revision/latest/scale-to-width-down/150?cb=20190313074443' },
+            { krName: '라마', enName: 'Llama', type: 'neutral', hp: 30, img: 'https://minecraft.wiki/images/thumb/Gray_Llama_JE2_BE2.png/150px-Gray_Llama_JE2_BE2.png?0d6f5' },
+            { krName: '소', enName: 'Cow', type: 'friendly', hp: 10, img: 'https://minecraft.wiki/images/thumb/Cow_JE7_BE4.png/150px-Cow_JE7_BE4.png?3de94' },
+            { krName: '말', enName: 'Horse', type: 'friendly', hp: 30, img: 'https://static.wikia.nocookie.net/minecraft_ko_gamepedia/images/8/86/White_Horse.png/revision/latest?cb=20190307142250' },
+            { krName: '돼지', enName: 'Pig', type: 'friendly', hp: 10, img: 'https://minecraft.wiki/images/thumb/Temperate_Pig_JE3.png/150px-Temperate_Pig_JE3.png?a2e09' },
+            { krName: '양', enName: 'Sheep', type: 'friendly', hp: 8, img: 'https://minecraft.wiki/images/thumb/White_Sheep_JE4_BE7.png/150px-White_Sheep_JE4_BE7.png?5062a' },
+            { krName: '닭', enName: 'Chicken', type: 'friendly', hp: 4, img: 'https://minecraft.wiki/images/thumb/Chicken_JE2_BE2.png/150px-Chicken_JE2_BE2.png?30245' },
+            { krName: '주민', enName: 'Villager', type: 'friendly', hp: 20, img: 'https://minecraft.wiki/images/thumb/Plains_Villager_Base_JE2.png/181px-Plains_Villager_Base_JE2.png?a2fcc' },
+            { krName: '위더', enName: 'Wither', type: 'boss', hp: 300, img: 'https://minecraft.wiki/images/thumb/Wither_JE2_BE2.png/250px-Wither_JE2_BE2.png?60b11' },
+            { krName: '엔더 드래곤', enName: 'Ender Dragon', type: 'boss', hp: 200, img: 'https://minecraft.wiki/images/Ender_Dragon.gif?fb9ba' },
+            { krName: '엘더 가디언', enName: 'Elder Guardian', type: 'boss', hp: 80, img: 'https://minecraft.wiki/images/thumb/Elder_Guardian_JE2_BE2.png/1200px-Elder_Guardian_JE2_BE2.png?5d0fb' },
+        ];
+
+        const TYPE_LABEL = { hostile: '적대적', neutral: '중립적', friendly: '친화적', boss: '보스' };
+
+        function renderCards(filter) {
+            const grid = document.getElementById('entity-grid');
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? ENTITIES : ENTITIES.filter(function(e) { return e.type === filter; });
+            filtered.forEach(function(entity) {
+                const card = document.createElement('div');
+                card.className = 'entity-card';
+                card.innerHTML =
+                    '<div class="card-sprite"><img src="' + entity.img + '" width="80" height="80"></div>' +
+                    '<div class="card-name-kr">' + entity.krName + '</div>' +
+                    '<div class="card-name-en">' + entity.enName + '</div>' +
+                    '<div class="card-hp">❤ ' + entity.hp + '</div>' +
+                    '<div class="card-type-badge badge-' + entity.type + '">' + TYPE_LABEL[entity.type] + '</div>';
+                grid.appendChild(card);
+            });
+        }
+
+        function filterClick(btn) {
+            document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            renderCards(btn.dataset.filter);
+        }
+        renderCards('all');
+
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const timeDisplay = document.getElementById('time-val');
+        const startBtn = document.getElementById('start-btn');
+
+        let gameActive = false;
+        let startTime = 0;
+        let elapsedTime = 0;
+        let animationId;
+
+        let steve = { x: 0, y: 0, size: 26, speed: 4.2 };
+        let zombies = [];
+        const BASE_ZOMBIE_SPEED = 2.0;
+
+        let keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+
+        window.addEventListener('keydown', function(e) {
+            if(e.code in keys) {
+                keys[e.code] = true;
+                if(gameActive) e.preventDefault();
+            }
+        });
+        window.addEventListener('keyup', function(e) {
+            if(e.code in keys) keys[e.code] = false;
+        });
+
+        function initCanvas() {
+            ctx.fillStyle = '#141414';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "20px 'Galmuri9', 'NeoDunggeunmo', sans-serif";
+            ctx.fillStyle = "#a08050";
+            ctx.textAlign = "center";
+            ctx.fillText("버튼을 눌러 게임을 시작하세요", canvas.width / 2, canvas.height / 2);
+        }
+        initCanvas();
+
+        function startGame() {
+            if (gameActive) return;
+
+            gameActive = true;
+            startTime = Date.now();
+            elapsedTime = 0;
+            startBtn.disabled = true;
+            startBtn.style.opacity = 0.5;
+
+            steve.x = canvas.width / 2 - steve.size / 2;
+            steve.y = canvas.height / 2 - steve.size / 2;
+
+            zombies = [
+                { x: 15, y: 15, size: 26 },
+                { x: canvas.width - 41, y: 15, size: 26 },
+                { x: 15, y: canvas.height - 41, size: 26 },
+                { x: canvas.width - 41, y: canvas.height - 41, size: 26 }
+            ];
+
+            keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+            updateGame();
+        }
+
+        function updateGame() {
+            if (!gameActive) return;
+
+            elapsedTime = (Date.now() - startTime) / 1000;
+            timeDisplay.textContent = elapsedTime.toFixed(2);
+
+            let currentZombieSpeed = BASE_ZOMBIE_SPEED + (elapsedTime * 0.1);
+
+            if (keys.ArrowUp && steve.y > 0) steve.y -= steve.speed;
+            if (keys.ArrowDown && steve.y < canvas.height - steve.size) steve.y += steve.speed;
+            if (keys.ArrowLeft && steve.x > 0) steve.x -= steve.speed;
+            if (keys.ArrowRight && steve.x < canvas.width - steve.size) steve.x += steve.speed;
+
+            ctx.fillStyle = '#141414';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < zombies.length; i++) {
+                let z1 = zombies[i];
+
+                let dx = (steve.x + steve.size/2) - (z1.x + z1.size/2);
+                let dy = (steve.y + steve.size/2) - (z1.y + z1.size/2);
+                let distToSteve = Math.sqrt(dx * dx + dy * dy);
+
+                let moveX = 0;
+                let moveY = 0;
+
+                if (distToSteve > 0) {
+                    moveX = (dx / distToSteve) * currentZombieSpeed;
+                    moveY = (dy / distToSteve) * currentZombieSpeed;
+                }
+
+                for (let j = 0; j < zombies.length; j++) {
+                    if (i === j) continue;
+                    let z2 = zombies[j];
+
+                    let zDx = (z1.x + z1.size/2) - (z2.x + z2.size/2);
+                    let zDy = (z1.y + z1.size/2) - (z2.y + z2.size/2);
+                    let zDist = Math.sqrt(zDx * zDx + zDy * zDy);
+                    
+                    let minDist = z1.size; 
+                    if (zDist < minDist && zDist > 0) {
+                        let overlap = minDist - zDist;
+                        moveX += (zDx / zDist) * overlap * 0.2; 
+                        moveY += (zDy / zDist) * overlap * 0.2;
+                    }
+                }
+
+                z1.x += moveX;
+                z1.y += moveY;
+
+                if (z1.x < 0) z1.x = 0;
+                if (z1.x > canvas.width - z1.size) z1.x = canvas.width - z1.size;
+                if (z1.y < 0) z1.y = 0;
+                if (z1.y > canvas.height - z1.size) z1.y = canvas.height - z1.size;
+
+                ctx.fillStyle = '#55ff55';
+                ctx.fillRect(z1.x, z1.y, z1.size, z1.size);
+                ctx.strokeStyle = '#00aa00';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(z1.x, z1.y, z1.size, z1.size);
+                
+                ctx.font = "8px 'Galmuri9', 'NeoDunggeunmo', sans-serif";
+                ctx.fillStyle = "#ff5555";
+                ctx.textAlign = "center";
+                ctx.fillText("좀비", z1.x + z1.size/2, z1.y - 5);
+
+                if (steve.x < z1.x + z1.size &&
+                    steve.x + steve.size > z1.x &&
+                    steve.y < z1.y + z1.size &&
+                    steve.y + steve.size > z1.y) {
+                    gameOver();
+                    return;
+                }
+            }
+
+            ctx.fillStyle = '#55ffff';
+            ctx.fillRect(steve.x, steve.y, steve.size, steve.size);
+            ctx.strokeStyle = '#00aaaa';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(steve.x, steve.y, steve.size, steve.size);
+
+            ctx.font = "8px 'Galmuri9', 'NeoDunggeunmo', sans-serif";
+            ctx.fillStyle = "#fff";
+            ctx.textAlign = "center";
+            ctx.fillText("스티브", steve.x + steve.size/2, steve.y - 5);
+
+            animationId = requestAnimationFrame(updateGame);
+        }
+
+        function gameOver() {
+            gameActive = false;
+            cancelAnimationFrame(animationId);
+
+            startBtn.disabled = false;
+            startBtn.style.opacity = 1;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = "20px 'Galmuri9', 'NeoDunggeunmo', sans-serif";
+            ctx.fillStyle = "#e74c3c";
+            ctx.textAlign = "center";
+            ctx.fillText("게임 종료", canvas.width / 2, canvas.height / 2 - 10);
+
+            ctx.font = "12px 'Galmuri9', 'NeoDunggeunmo', sans-serif";
+            ctx.fillStyle = "#f5c542";
+            ctx.fillText("살아남은 시간: " + elapsedTime.toFixed(2) + "초", canvas.width / 2, canvas.height / 2 + 25);
+        }
+    </script>
+</body>
+</html>
