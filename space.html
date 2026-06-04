@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space - 태양계 탐사</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #03030c;
+            color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #0b112c 0%, #03030c 100%);
+            z-index: -2;
+        }
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.6;
+            z-index: -1;
+            animation: floatStars 100s linear infinite;
+        }
+        @keyframes floatStars {
+            from { background-position: 0 0; }
+            to { background-position: 1000px 1000px; }
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(3, 3, 12, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-btn {
+            background: transparent;
+            border: 1px solid rgba(0, 242, 254, 0.5);
+            color: #00f2fe;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: #00f2fe;
+            color: #03030c;
+            box-shadow: 0 0 15px #00f2fe;
+        }
+        .intro-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .intro-section h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+        .explore-btn {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            color: white;
+            margin-top: 25px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .explore-btn:hover {
+            transform: scale(1.05);
+        }
+        .solar-system-section {
+            min-height: 100vh;
+            padding: 120px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sun-container {
+            width: 100%;
+            max-width: 1300px;
+            margin-bottom: 40px;
+        }
+        .sun-card {
+            background: linear-gradient(135deg, rgba(255, 69, 0, 0.15) 0%, rgba(255, 140, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        .sun-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff4500;
+            box-shadow: 0 0 30px rgba(255, 69, 0, 0.3);
+        }
+        .sun-img {
+            width: 220px;
+            height: 220px;
+            object-fit: contain;
+            margin: 0 auto 20px;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        .sun-card:hover .sun-img {
+            transform: scale(1.08);
+        }
+        .universe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1300px;
+        }
+        .planet-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .planet-card:hover {
+            transform: translateY(-10px);
+            border-color: #00f2fe;
+        }
+        .planet-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin: 0 auto 20px;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .planet-card:hover .planet-img {
+            transform: scale(1.1) rotate(15deg);
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s;
+            z-index: 1000;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: #0f172a;
+            border: 1px solid #00f2fe;
+            padding: 40px;
+            border-radius: 30px;
+            max-width: 500px;
+            text-align: center;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .modal-img-view {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        .info-tag {
+            display: inline-block;
+            background: rgba(0, 242, 254, 0.1);
+            color: #00f2fe;
+            padding: 5px 12px;
+            border-radius: 10px;
+            margin: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .modal-content.sun-theme {
+            border-color: #ff4500;
+            box-shadow: 0 0 25px rgba(255, 69, 0, 0.4);
+        }
+        .modal-content.sun-theme h2 {
+            color: #ff5500 !important;
+        }
+        .modal-content.sun-theme .info-tag {
+            background: rgba(255, 69, 0, 0.15);
+            color: #ff6a00;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="space-bg"></div>
+    <div class="stars"></div>
+    <nav class="navbar">
+        <div class="logo">SPACE - 태양계 탐사</div>
+        <button class="nav-btn" onclick="scrollToSection('explore')">탐사 시작</button>
+    </nav>
+    <section class="intro-section">
+        <h1>태양계 탐험</h1>
+        <p>우리 은하의 경이로운 세계를 한눈에 확인하세요.</p>
+        <button class="explore-btn" onclick="scrollToSection('explore')">발사</button>
+    </section>
+    <section class="solar-system-section" id="explore">
+        <div class="sun-container">
+            <div class="sun-card" onclick="openModal('태양', 'https://cdn.pixabay.com/photo/2018/01/26/13/04/sun-3108640_1280.png', '태양계 질량의 99.8%를 차지하는 중심 항성입니다. 강력한 중력으로 8개의 행성들을 붙잡고 있으며, 중심부 핵융합 반응을 통해 엄청난 빛과 열에너지를 우주 공간으로 끊임없이 방출하여 지구상의 모든 생명체가 살아가는 근원적인 에너지를 공급합니다.', ['지름: 1,392,700km', '표면 온도: 약 5,500℃', '유형: 황색 왜성', '핵심: 태양계의 중심'], true)">
+                <img src="https://cdn.pixabay.com/photo/2018/01/26/13/04/sun-3108640_1280.png" class="sun-img" alt="태양">
+                <h2 style="color: #ff8c00; letter-spacing: 1px;">태양 (The Sun)</h2>
+            </div>
+        </div>
+        <div class="universe-grid">
+            <div class="planet-card" onclick="openModal('수성', 'https://png.pngtree.com/png-clipart/20220705/ourmid/pngtree-mercury-planet-png-image_5683897.png', '태양과 가장 가까운 수성은 대기가 거의 없어 태양풍을 그대로 맞이합니다. 이 때문에 낮에는 430도까지 치솟고 밤에는 마이너스 180도까지 떨어지는 극단적인 기후를 가집니다. 표면은 달처럼 운석 구덩이로 가득 차 있으며, 태양계 행성 중 가장 빠르고 힘차게 공전합니다.', ['지름: 4,879km', '평균 온도: 167℃', '공전 주기: 88일', '핵심: 극단적인 낮과 밤'])">
+                <img src="https://png.pngtree.com/png-clipart/20220705/ourmid/pngtree-mercury-planet-png-image_5683897.png" class="planet-img" alt="수성">
+                <h3>수성 (Mercury)</h3>
+            </div>
+            <div class="planet-card" onclick="openModal('금성', 'https://png.pngtree.com/png-vector/20240125/ourmid/pngtree-beautiful-planet-venus-png-image_11492992.png', '크기와 질량이 지구와 가장 비슷해 지구의 자매 행성으로 불리지만, 환경은 완전히 다릅니다. 이산화탄소로 가득 찬 초고밀도 대기가 거대한 온실 효과를 일으켜 표면 온도가 460도가 넘는 태양계에서 가장 뜨거운 지옥 같은 곳입니다. 황산으로 된 구름이 행성 전체를 덮고 있습니다.', ['지름: 12,104km', '평균 온도: 464℃', '자전 방향: 역방향', '핵심: 폭주한 온실효과'])">
+                <img src="https://png.pngtree.com/png-vector/20240125/ourmid/pngtree-beautiful-planet-venus-png-image_11492992.png" class="planet-img" alt="금성">
+                <h3>금성 (Venus)</h3>
+            </div>
+            <div class="planet-card" onclick="openModal('지구', 'https://marketplace.canva.com/KvkBU/MAE1qYKvkBU/1/tl/canva-earth-MAE1qYKvkBU.png', '표면의 70%가 액체 상태 of 물로 덮여 있어 우주에서 가장 아름다운 푸른빛을 띱니다. 적절한 대기압과 알맞은 온도가 유지되며, 태양계에서 강력한 자기장 방어막을 갖추고 있어 유해한 우주 방사선을 막아줍니다. 현재까지 우주에서 생명체가 존재하는 것이 증명된 유일한 오아시스입니다.', ['지름: 12,742km', '평균 온도: 15℃', '위성: 달(1개)', '핵심: 액체 상태의 물'])">
+                <img src="https://marketplace.canva.com/KvkBU/MAE1qYKvkBU/1/tl/canva-earth-MAE1qYKvkBU.png" class="planet-img" alt="지구">
+                <h3>지구 (Earth)</h3>
+            </div>
+            <div class="planet-card" onclick="openModal('화성', 'https://png.pngtree.com/png-vector/20240918/ourmid/pngtree-red-mars-planet-image-png-image_13861942.png', '표면이 산화철(녹슨 철) 성분의 모래와 바위로 뒤덮여 있어 붉게 보입니다. 과거에 거대한 강과 바다가 존재했던 흔적이 발견되어 생명체 탐사의 핵심 기지가 되었습니다. 태양계에서 가장 거대한 화산인 올림푸스 몬스(22km 높이)와 지구의 그랜드 캐니언보다 10배 큰 대협곡을 품고 있습니다.', ['지름: 6,779km', '평균 온도: -62℃', '위성: 2개', '핵심: 인류 제2의 거주지 후보'])">
+                <img src="https://png.pngtree.com/png-vector/20240918/ourmid/pngtree-red-mars-planet-image-png-image_13861942.png" class="planet-img" alt="화성">
+                <h3>화성 (Mars)</h3>
+            </div>
+            <div class="planet-card" onclick="openModal('목성', 'https://png.pngtree.com/png-vector/20240923/ourmid/pngtree-jupiter-planet-image-on-white-background-png-image_13888640.png', '태양계 모든 행성의 질량을 합친 것보다 2.5배나 무거운 거대한 가스 거인입니다. 지구 크기의 수만 한 태풍이 수백 년째 불고 있는 고유한 무늬 대적점(Great Red Spot)이 특징입니다. 워낙 중력이 강해 지구로 날아오는 수많은 우주 쓰레기와 운석을 대신 끌어당겨 주는 지구의 방패 역할을 합니다.', ['지름: 139,820km', '유형: 가스 행성', '위성 수: 95개 이상', '핵심: 태양계의 수호자'])">
+                <img src="https://png.pngtree.com/png-vector/20240923/ourmid/pngtree-jupiter-planet-image-on-white-background-png-image_13888640.png" class="planet-img" alt="목성">
+                <h3>목성 (Jupiter)</h3>
+            </div>
+            <div class="planet-card" onclick="openModal('토성', 'https://png.pngtree.com/png-vector/20240309/ourmid/pngtree-beautiful-planet-saturn-png-image_11898581.png', '우주에서 가장 아름답고 화려한 고리 시스템을 가졌습니다. 이 고리는 억만 개의 얼음 조각과 우주 먼지, 바위로 이루어져 있습니다. 거대한 크기에 비해 밀도가 엄청나게 낮아서, 만약 토성을 담을 수 있는 거대한 욕조가 있다면 물 위에 둥둥 뜰 정도로 가벼운 성질을 지니고 있습니다.', ['지름: 116,460km', '밀도: 물보다 낮음', '위성 수: 140개 이상', '핵심: 화려한 얼음 고리'])">
+                <img src="https://png.pngtree.com/png-vector/20240309/ourmid/pngtree-beautiful-planet-saturn-png-image_11898581.png" class="planet-img" alt="토성">
+                <h3>토성 (Saturn)</h3>
+            </div>
+            <div class="planet-card" onclick="openModal('천왕성', 'https://png.pngtree.com/png-vector/20240917/ourmid/pngtree-uranus-planet-illustration-image-png-image_13861979.png', '대기 중의 메탄 성분이 적색광을 흡수하고 청색광을 반사하여 영롱한 청록색 빛을 띱니다. 다른 행성들과 달리 자전축이 약 98도나 기울어져 있어, 마치 옆으로 누운 채 공처럼 굴러가며 태양을 공전하는 독특한 행성입니다. 두꺼운 얼음과 암석으로 이루어진 얼음 거인입니다.', ['지름: 50,724km', '평균 온도: -195℃', '특징: 누워서 자전', '핵심: 신비로운 청록색'])">
+                <img src="https://png.pngtree.com/png-vector/20240917/ourmid/pngtree-uranus-planet-illustration-image-png-image_13861979.png" class="planet-img" alt="천왕성">
+                <h3>천왕성 (Uranus)</h3>
+            </div>
+            <div class="planet-card" onclick="openModal('해왕성', 'https://png.pngtree.com/png-vector/20241215/ourmid/pngtree-neptune-planet-png-image_14789731.png', '태양계의 가장 바깥쪽을 지키고 있는 짙은 푸른빛의 행성입니다. 태양과 너무 멀어 에너지를 거의 받지 못하지만, 내부 열원 때문에 강력한 대기 활동이 일어납니다. 태양계에서 가장 혹독한 대기 환경을 자랑하며, 시속 2,000km에 달하는 초강력 대폭풍이 몰아치는 역동적인 얼음 행성입니다.', ['지름: 49,244km', '평균 온도: -200℃', '공전 주기: 165년', '핵심: 시속 2000km의 강풍'])">
+                <img src="https://png.pngtree.com/png-vector/20241215/ourmid/pngtree-neptune-planet-png-image_14789731.png" class="planet-img" alt="해왕성">
+                <h3>해왕성 (Neptune)</h3>
+            </div>
+        </div>
+    </section>
+    <div class="modal-overlay" id="planetModal" onclick="closeModal()">
+        <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
+            <img src="" class="modal-img-view" id="modalImg" alt="상세 정보">
+            <h2 id="modalName" style="margin-bottom:10px;"></h2>
+            <p id="modalDesc" style="margin-bottom:20px; line-height:1.6; color: #e2e8f0;"></p>
+            <div id="modalTags"></div>
+        </div>
+    </div>
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+        const modal = document.getElementById('planetModal');
+        const modalContent = document.getElementById('modalContent');
+        
+        function openModal(name, imgSrc, desc, tags, isSun = false) {
+            if (isSun) {
+                modalContent.classList.add('sun-theme');
+            } else {
+                modalContent.classList.remove('sun-theme');
+            }
+            
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('modalImg').src = imgSrc;
+            
+            const tagContainer = document.getElementById('modalTags');
+            tagContainer.innerHTML = '';
+            tags.forEach(t => {
+                const s = document.createElement('span');
+                s.className = 'info-tag';
+                s.innerText = t;
+                tagContainer.appendChild(s);
+            });
+            modal.classList.add('active');
+        }
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
